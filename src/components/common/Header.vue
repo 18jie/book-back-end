@@ -50,6 +50,7 @@
 </template>
 <script>
 import bus from '../common/bus';
+import { logout } from '../../api/index';
 export default {
     data() {
         return {
@@ -70,7 +71,15 @@ export default {
         handleCommand(command) {
             if (command == 'loginout') {
                 localStorage.removeItem('ms_username');
-                this.$router.push('/login');
+                logout({id:localStorage.getItem('ms_user').id}).then(res=>{
+                  if(res){
+                    this.$message.success('退出成功');
+                    this.$router.push('/login');
+                  }else{
+                    this.$message.error('退出失败');
+                    return false;
+                  }
+                })
             }
         },
         // 侧边栏折叠

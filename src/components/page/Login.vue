@@ -52,7 +52,9 @@ export default {
                             this.$message.success('登录成功');
                             var user = res.data;
                             localStorage.setItem('ms_username',user.username);
-                            localStorage.setItem('ms_loginTime',user.loginTime);
+                            // localStorage.setItem('ms_loginTime',user.loginTime);
+                            // localStorage.setItem('ms_loginCount',user.loginCount);
+                            localStorage.setItem('ms_user',user);
                             this.$router.push('/');
                         }else{
                             this.$message.error('账号活密码错误');

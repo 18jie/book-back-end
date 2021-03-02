@@ -134,7 +134,6 @@
 <script>
 import Schart from 'vue-schart';
 import bus from '../common/bus';
-import { fetchBook } from '../../api/index';
 export default {
     name: 'dashboard',
     data() {
@@ -257,7 +256,7 @@ export default {
     created() {
         // this.handleListener();
         // this.changeDate();
-        this.getBook();
+        // this.getBook();
     },
     // activated() {
     //     this.handleListener();
@@ -273,13 +272,13 @@ export default {
                 const date = new Date(now - (6 - index) * 86400000);
                 item.name = `${date.getFullYear()}/${date.getMonth() + 1}/${date.getDate()}`;
             });
-        },
-        getBook() {
-            console.log(this.book);
-            fetchBook(this.book).then((res) => {
-                console.log(res);
-            });
         }
+        // getBook() {
+        //     console.log(this.book);
+        //     fetchBook(this.book).then((res) => {
+        //         console.log(res);
+        //     });
+        // }
         // handleListener() {
         //     bus.$on('collapse', this.handleBus);
         //     // 调用renderChart方法对图表进行重新渲染

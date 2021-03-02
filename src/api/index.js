@@ -26,3 +26,11 @@ export const login = loginParam => {
     data: loginParam
   });
 }
+
+export const logout = logout => {
+  return request({
+    url: '/login/logout',
+    method: 'post',
+    data: logout
+  })
+}
