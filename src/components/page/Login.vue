@@ -4,7 +4,7 @@
             <div class="ms-title">后台管理系统</div>
             <el-form :model="param" :rules="rules" ref="login" label-width="0px" class="ms-content">
                 <el-form-item prop="username">
-                    <el-input v-model="param.username" placeholder="username">
+                    <el-input v-model="param.phone" placeholder="username">
                         <el-button slot="prepend" icon="el-icon-lx-people"></el-button>
                     </el-input>
                 </el-form-item>
@@ -21,22 +21,23 @@
                 <div class="login-btn">
                     <el-button type="primary" @click="submitForm()">登录</el-button>
                 </div>
-                <p class="login-tips">Tips : 用户名和密码随便填。</p>
+                <!-- <p class="login-tips">Tips : 用户名和密码随便填。</p> -->
             </el-form>
         </div>
     </div>
 </template>
 
 <script>
+import { login } from '../../api/index';
 export default {
     data: function() {
         return {
             param: {
-                username: 'admin',
+                phone: 'admin',
                 password: '123123',
             },
             rules: {
-                username: [{ required: true, message: '请输入用户名', trigger: 'blur' }],
+                phone: [{ required: true, message: '请输入手机号', trigger: 'blur' }],
                 password: [{ required: true, message: '请输入密码', trigger: 'blur' }],
             },
         };
@@ -44,9 +45,22 @@ export default {
     methods: {
         submitForm() {
             this.$refs.login.validate(valid => {
-                if (valid) {
-                    this.$message.success('登录成功');
-                    localStorage.setItem('ms_username', this.param.username);
+                    if (valid) {
+                        login(this.param).then(res=>{
+                        console.log(res);
+                        if(res.code == 0){
+                            this.$message.success('登录成功');
+                            var user = res.data;
+                            localStorage.setItem('ms_username',user.username);
+                            localStorage.setItem('ms_loginTime',user.loginTime);
+                            this.$router.push('/');
+                        }else{
+                            this.$message.error('账号活密码错误');
+                            return false;
+                        }
+                    })
+                    // this.$message.success('登录成功');
+                    // localStorage.setItem('ms_username', this.param.username);
                     this.$router.push('/');
                 } else {
                     this.$message.error('请输入账号和密码');

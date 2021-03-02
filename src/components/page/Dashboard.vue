@@ -69,7 +69,7 @@
             <el-card shadow="hover"
                      :body-style="{padding: '0px'}">
               <div class="grid-content grid-con-3">
-                <i class="el-icon-lx-goods grid-con-icon"></i>
+                <i class="el-icon-notebook-1 grid-con-icon"></i>
                 <div class="grid-cont-right">
                   <div class="grid-num">5000</div>
                   <div>数量</div>
