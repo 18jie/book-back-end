@@ -84,7 +84,7 @@
                class="clearfix">
             <span>待办事项</span>
             <el-button style="float: right; padding: 3px 0"
-                       type="text">添加</el-button>
+                       type="text" @click="open">添加</el-button>
           </div>
           <el-table :show-header="false"
                     :data="todoList"
@@ -272,6 +272,27 @@ export default {
                 const date = new Date(now - (6 - index) * 86400000);
                 item.name = `${date.getFullYear()}/${date.getMonth() + 1}/${date.getDate()}`;
             });
+        },
+        open() {
+            this.$prompt('请输入代办事项', '提示', {
+                confirmButtonText: '确定',
+                cancelButtonText: '取消',
+                // inputPattern: /[\w!#$%&'*+/=?^_`{|}~-]+(?:\.[\w!#$%&'*+/=?^_`{|}~-]+)*@(?:[\w](?:[\w-]*[\w])?\.)+[\w](?:[\w-]*[\w])?/,
+                // inputErrorMessage: '邮箱格式不正确'
+            })
+                .then(({ value }) => {
+                    this.$message({
+                      // TODO 后端接收消息
+                        type: 'success',
+                        message: '你的邮箱是: ' + value
+                    });
+                })
+                .catch(() => {
+                    this.$message({
+                        type: 'info',
+                        message: '取消输入'
+                    });
+                });
         }
         // getBook() {
         //     console.log(this.book);
