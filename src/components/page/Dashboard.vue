@@ -110,7 +110,7 @@
         </el-card>
       </el-col>
     </el-row>
-    <el-row :gutter="20">
+    <!-- <el-row :gutter="20">
       <el-col :span="12">
         <el-card shadow="hover">
           <schart ref="bar"
@@ -127,7 +127,7 @@
                   :options="options2"></schart>
         </el-card>
       </el-col>
-    </el-row>
+    </el-row> -->
   </div>
 </template>
 
