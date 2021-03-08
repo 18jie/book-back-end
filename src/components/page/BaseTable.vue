@@ -15,11 +15,15 @@
                     class="handle-del mr10"
                     @click="delAllSelection"
                 >批量删除</el-button>
-                <el-select v-model="query.address" placeholder="地址" class="handle-select mr10">
-                    <el-option key="1" label="广东省" value="广东省"></el-option>
-                    <el-option key="2" label="湖南省" value="湖南省"></el-option>
+                <el-select v-model="query.type" placeholder="类型" class="handle-select mr10">
+                    <el-option key="1" label="玄幻奇幻" value="1"></el-option>
+                    <el-option key="2" label="武侠仙侠" value="2"></el-option>
+                    <el-option key="3" label="女频言情" value="3"></el-option>
+                    <el-option key="4" label="现代都市" value="4"></el-option>
+                    <el-option key="5" label="历史军事" value="5"></el-option>
+                    <el-option key="7" label="科幻灵异" value="7"></el-option>
                 </el-select>
-                <el-input v-model="query.name" placeholder="用户名" class="handle-input mr10"></el-input>
+                <el-input v-model="query.name" placeholder="书籍名称" class="handle-input mr10"></el-input>
                 <el-button type="primary" icon="el-icon-search" @click="handleSearch">搜索</el-button>
             </div>
             <el-table
@@ -31,17 +35,17 @@
                 @selection-change="handleSelectionChange"
             >
                 <el-table-column type="selection" width="55" align="center"></el-table-column>
-                <el-table-column prop="id" label="ID" width="55" align="center"></el-table-column>
-                <el-table-column prop="name" label="用户名"></el-table-column>
-                <el-table-column label="账户余额">
-                    <template slot-scope="scope">￥{{scope.row.money}}</template>
+                <el-table-column prop="id" label="ID" width="80" align="center"></el-table-column>
+                <el-table-column prop="bookName" label="书名"></el-table-column>
+                <el-table-column prop="bookWriter" label="作者">
+                    <!-- <template slot-scope="scope">￥{{scope.row.money}}</template> -->
                 </el-table-column>
-                <el-table-column label="头像(查看大图)" align="center">
+                <el-table-column label="封面(查看大图)" align="center">
                     <template slot-scope="scope">
                         <el-image
                             class="table-td-thumb"
-                            :src="scope.row.thumb"
-                            :preview-src-list="[scope.row.thumb]"
+                            :src="scope.row.imgPath"
+                            :preview-src-list="[scope.row.imgPath]"
                         ></el-image>
                     </template>
                 </el-table-column>
@@ -49,12 +53,12 @@
                 <el-table-column label="状态" align="center">
                     <template slot-scope="scope">
                         <el-tag
-                            :type="scope.row.state==='成功'?'success':(scope.row.state==='失败'?'danger':'')"
-                        >{{scope.row.state}}</el-tag>
+                            :type="scope.row.deleted===0?'success':(scope.row.state===1?'danger':'')"
+                        >{{scope.row.deleted === 0 ? '连载' : '结束'}}</el-tag>
                     </template>
                 </el-table-column>
 
-                <el-table-column prop="date" label="注册时间"></el-table-column>
+                <el-table-column prop="bookUpdateTime" label="更新时间"></el-table-column>
                 <el-table-column label="操作" width="180" align="center">
                     <template slot-scope="scope">
                         <el-button
@@ -108,7 +112,7 @@ export default {
     data() {
         return {
             query: {
-                address: '',
+                type: '',
                 name: '',
                 pageIndex: 1,
                 pageSize: 10
@@ -131,8 +135,9 @@ export default {
         getData() {
             fetchData(this.query).then(res => {
                 console.log(res);
-                this.tableData = res.list;
-                this.pageTotal = res.pageTotal || 50;
+                let tmp = res.data;
+                this.tableData = tmp.records;
+                this.pageTotal = tmp.total || 50;
             });
         },
         // 触发搜索按钮

@@ -3,7 +3,7 @@ import axios from 'axios'
 
 export const fetchData = query => {
   return request({
-    url: './table.json',
+    url: '/book/listBooks',
     method: 'get',
     params: query
   });
