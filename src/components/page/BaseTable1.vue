@@ -2,28 +2,21 @@
     <div>
         <div class="crumbs">
             <el-breadcrumb separator="/">
-                <el-breadcrumb-item>
-                    <i class="el-icon-lx-cascades"></i> 书籍管理
-                </el-breadcrumb-item>
+                <el-breadcrumb-item> <i class="el-icon-lx-cascades"></i> 书籍管理 </el-breadcrumb-item>
             </el-breadcrumb>
         </div>
         <div class="container">
             <div class="handle-box">
-                <el-button
-                    type="primary"
-                    icon="el-icon-delete"
-                    class="handle-del mr10"
-                    @click="delAllSelection"
-                >批量删除</el-button>
-                <el-select v-model="query.type" placeholder="类型" class="handle-select mr10">
-                    <el-option key="1" label="玄幻奇幻" value="1"></el-option>
-                    <el-option key="2" label="武侠仙侠" value="2"></el-option>
-                    <el-option key="3" label="女频言情" value="3"></el-option>
-                    <el-option key="4" label="现代都市" value="4"></el-option>
-                    <el-option key="5" label="历史军事" value="5"></el-option>
-                    <el-option key="7" label="科幻灵异" value="7"></el-option>
+                <el-button type="primary" icon="el-icon-delete" class="handle-del mr10" @click="delAllSelection">批量删除</el-button>
+                <el-select v-model="query.level" placeholder="弹幕级别" class="handle-select mr10">
+                    <el-option key="1" label="正能量" value="1"></el-option>
+                    <el-option key="2" label="正常" value="2"></el-option>
+                    <el-option key="3" label="正常1" value="3"></el-option>
+                    <el-option key="4" label="正常2" value="4"></el-option>
+                    <el-option key="5" label="正常3" value="5"></el-option>
+                    <el-option key="6" label="正常4" value="6"></el-option>
                 </el-select>
-                <el-input v-model="query.name" placeholder="书籍名称" class="handle-input mr10"></el-input>
+                <el-input v-model="query.name" placeholder="内容" class="handle-input mr10"></el-input>
                 <el-button type="primary" icon="el-icon-search" @click="handleSearch">搜索</el-button>
             </div>
             <el-table
@@ -36,11 +29,12 @@
             >
                 <el-table-column type="selection" width="55" align="center"></el-table-column>
                 <el-table-column prop="id" label="ID" width="80" align="center"></el-table-column>
-                <el-table-column prop="bookName" label="书名"></el-table-column>
-                <el-table-column prop="bookWriter" label="作者">
+                <el-table-column prop="username" label="发布者"></el-table-column>
+                <el-table-column prop="bookName" label="弹幕书籍">
                     <!-- <template slot-scope="scope">￥{{scope.row.money}}</template> -->
                 </el-table-column>
-                <el-table-column label="封面(查看大图)" align="center">
+                <el-table-column prop="chapterName" label="弹幕章节"></el-table-column>
+                <!-- <el-table-column label="封面(查看大图)" align="center">
                     <template slot-scope="scope">
                         <el-image
                             class="table-td-thumb"
@@ -48,32 +42,29 @@
                             :preview-src-list="[scope.row.imgPath]"
                         ></el-image>
                     </template>
-                </el-table-column>
-                <el-table-column prop="address" label="地址"></el-table-column>
-                <el-table-column label="状态" align="center">
+                </el-table-column> -->
+                <el-table-column label="弹幕内容" align="center">
                     <template slot-scope="scope">
-                        <el-tag
-                            :type="scope.row.deleted===0?'success':(scope.row.state===1?'danger':'')"
-                        >{{scope.row.deleted === 0 ? '连载' : '结束'}}</el-tag>
+                        <p :title="`${scope.row.content}`">{{getIntro(scope.row.content)}}</p>
                     </template>
                 </el-table-column>
+                <!-- <el-table-column label="状态" align="center">
+                    <template slot-scope="scope">
+                        <el-tag :type="scope.row.deleted === 0 ? 'success' : scope.row.state === 1 ? 'danger' : ''">{{
+                            scope.row.deleted === 0 ? '连载' : '结束'
+                        }}</el-tag>
+                    </template>
+                </el-table-column> -->
 
-                <el-table-column label="更新时间">
-                    <template slot-scope="scope">{{formatTime(scope.row.bookUpdateTime)}}</template>
+                <el-table-column label="发布时间">
+                    <template slot-scope="scope">{{formatTime(scope.row.createTime)}}</template>
                 </el-table-column>
                 <el-table-column label="操作" width="180" align="center">
                     <template slot-scope="scope">
-                        <el-button
-                            type="text"
-                            icon="el-icon-edit"
-                            @click="handleEdit(scope.$index, scope.row)"
-                        >编辑</el-button>
-                        <el-button
-                            type="text"
-                            icon="el-icon-delete"
-                            class="red"
-                            @click="handleDelete(scope.$index, scope.row)"
-                        >删除</el-button>
+                        <el-button type="text" icon="el-icon-edit" @click="handleEdit(scope.$index, scope.row)">编辑</el-button>
+                        <el-button type="text" icon="el-icon-delete" class="red" @click="handleDelete(scope.$index, scope.row)"
+                            >删除</el-button
+                        >
                     </template>
                 </el-table-column>
             </el-table>
@@ -108,14 +99,14 @@
 </template>
 
 <script>
-import { fetchData } from '../../api/index';
+import { fetchBarrage } from '../../api/index';
 import { formatDate } from '../../utils/time';
 export default {
     name: 'basetable',
     data() {
         return {
             query: {
-                type: '',
+                level: '',
                 name: '',
                 pageIndex: 1,
                 pageSize: 10
@@ -127,7 +118,8 @@ export default {
             pageTotal: 0,
             form: {},
             idx: -1,
-            id: -1
+            id: -1,
+            introLimit: 10
         };
     },
     created() {
@@ -136,12 +128,19 @@ export default {
     methods: {
         // 获取 easy-mock 的模拟数据
         getData() {
-            fetchData(this.query).then(res => {
+            fetchBarrage(this.query).then((res) => {
                 console.log(res);
                 let tmp = res.data;
                 this.tableData = tmp.records;
                 this.pageTotal = tmp.total;
             });
+        },
+        getIntro(value) {
+            if (value.length > this.introLimit) {
+                return value.substr(0, this.introLimit) + '...';
+            } else {
+                return value;
+            }
         },
         formatTime(value){
             var date = new Date(value);

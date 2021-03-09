@@ -9,6 +9,14 @@ export const fetchData = query => {
   });
 };
 
+export const fetchBarrage = queryBarrage => {
+  return request({
+    url: '/barrage/barrages',
+    method: 'get',
+    params: queryBarrage
+  });
+};
+
 // 获取数据列表
 export const fetchBook = queryBook => {
   return request({

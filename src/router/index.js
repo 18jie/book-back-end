@@ -31,8 +31,13 @@ export default new Router({
                 },
                 {
                     path: '/table1',
-                    component: () => import(/* webpackChunkName: "table" */ '../components/page/BaseTable.vue'),
+                    component: () => import(/* webpackChunkName: "table" */ '../components/page/BaseTable1.vue'),
                     meta: { title: '弹幕管理' }
+                },
+                {
+                    path: '/table2',
+                    component: () => import(/* webpackChunkName: "table" */ '../components/page/BaseTable2.vue'),
+                    meta: { title: '用户管理' }
                 },
                 {
                     path: '/tabs',

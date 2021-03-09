@@ -72,6 +72,11 @@ export default {
                     title: '弹幕管理'
                 },
                 {
+                    icon: 'el-icon-lx-cascades',
+                    index: 'table2',
+                    title: '用户管理'
+                },
+                {
                     icon: 'el-icon-lx-copy',
                     index: 'tabs',
                     title: 'tab选项卡'
