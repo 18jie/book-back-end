@@ -49,8 +49,15 @@
                         ></el-image>
                     </template>
                 </el-table-column>
-                <el-table-column prop="address" label="地址"></el-table-column>
-                <el-table-column label="状态" align="center">
+                <!-- <el-table-column prop="address" label="地址"></el-table-column> -->
+                <el-table-column label="上架状态" align="center">
+                    <template slot-scope="scope">
+                        <el-tag
+                            :type="scope.row.upStatus===0?'success':(scope.row.state===1?'danger':'')"
+                        >{{scope.row.upStatus === 0 ? '上架' : '下架'}}</el-tag>
+                    </template>
+                </el-table-column>
+                <el-table-column label="连载状态" align="center">
                     <template slot-scope="scope">
                         <el-tag
                             :type="scope.row.deleted===0?'success':(scope.row.state===1?'danger':'')"
@@ -110,6 +117,7 @@
 <script>
 import { fetchData } from '../../api/index';
 import { formatDate } from '../../utils/time';
+import { unUpBook } from '../../api/index';
 export default {
     name: 'basetable',
     data() {
@@ -154,13 +162,25 @@ export default {
         },
         // 删除操作
         handleDelete(index, row) {
+            console.log(row.id)
+            let query ={};
+            let ids = [];
+            ids.push(row.id);
+            query.ids = ids;
             // 二次确认删除
-            this.$confirm('确定要删除吗？', '提示', {
+            this.$confirm('确定要下架吗？', '提示', {
                 type: 'warning'
             })
                 .then(() => {
-                    this.$message.success('删除成功');
-                    this.tableData.splice(index, 1);
+                    unUpBook(query).then(res =>{
+                        console.log(res)
+                        if(res.success){
+                            this.$message.success('下架成功');
+                        }else{
+                            this.$message.error('下架失败');
+                        }
+                    })
+                    this.getData();
                 })
                 .catch(() => {});
         },
