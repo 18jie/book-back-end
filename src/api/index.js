@@ -9,6 +9,14 @@ export const fetchData = query => {
   });
 };
 
+export const unUpBook = query => {
+  return request({
+    url: '/book/unUpBook',
+    method: 'post',
+    data: query
+  });
+};
+
 export const fetchBarrage = queryBarrage => {
   return request({
     url: '/barrage/barrages',
