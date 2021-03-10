@@ -14,7 +14,7 @@
                     icon="el-icon-delete"
                     class="handle-del mr10"
                     @click="delAllSelection"
-                >批量删除</el-button>
+                >批量下架</el-button>
                 <el-select v-model="query.type" placeholder="类型" class="handle-select mr10">
                     <el-option key="1" label="玄幻奇幻" value="1"></el-option>
                     <el-option key="2" label="武侠仙侠" value="2"></el-option>
@@ -77,10 +77,15 @@
                         >编辑</el-button>
                         <el-button
                             type="text"
+                            icon="el-icon-refresh"
+                            @click="handleDelete(scope.$index, scope.row, 0)"
+                        >上架</el-button>
+                        <el-button
+                            type="text"
                             icon="el-icon-delete"
                             class="red"
-                            @click="handleDelete(scope.$index, scope.row)"
-                        >删除</el-button>
+                            @click="handleDelete(scope.$index, scope.row, 1)"
+                        >下架</el-button>
                     </template>
                 </el-table-column>
             </el-table>
@@ -99,11 +104,11 @@
         <!-- 编辑弹出框 -->
         <el-dialog title="编辑" :visible.sync="editVisible" width="30%">
             <el-form ref="form" :model="form" label-width="70px">
-                <el-form-item label="用户名">
-                    <el-input v-model="form.name"></el-input>
+                <el-form-item label="书名">
+                    <el-input v-model="form.bookName"></el-input>
                 </el-form-item>
-                <el-form-item label="地址">
-                    <el-input v-model="form.address"></el-input>
+                <el-form-item label="作者">
+                    <el-input v-model="form.bookWriter"></el-input>
                 </el-form-item>
             </el-form>
             <span slot="footer" class="dialog-footer">
@@ -118,6 +123,7 @@
 import { fetchData } from '../../api/index';
 import { formatDate } from '../../utils/time';
 import { unUpBook } from '../../api/index';
+import { updateBook } from '../../api/index';
 export default {
     name: 'basetable',
     data() {
@@ -145,7 +151,6 @@ export default {
         // 获取 easy-mock 的模拟数据
         getData() {
             fetchData(this.query).then(res => {
-                console.log(res);
                 let tmp = res.data;
                 this.tableData = tmp.records;
                 this.pageTotal = tmp.total;
@@ -161,23 +166,38 @@ export default {
             this.getData();
         },
         // 删除操作
-        handleDelete(index, row) {
+        handleDelete(index, row, type) {
             console.log(row.id)
             let query ={};
             let ids = [];
             ids.push(row.id);
             query.ids = ids;
+            query.type = type;
             // 二次确认删除
-            this.$confirm('确定要下架吗？', '提示', {
+            let warn = "";
+            if(type == 0){
+              warn = "确定要上架吗？"
+            }else{
+              warn = "确定要下架吗？"
+            }
+            this.$confirm(warn, '提示', {
                 type: 'warning'
             })
                 .then(() => {
                     unUpBook(query).then(res =>{
                         console.log(res)
-                        if(res.success){
-                            this.$message.success('下架成功');
+                        if(res.code == 0){
+                            if(type == 1){
+                              this.$message.success('下架成功');
+                            }else{
+                              this.$message.success('上架成功');
+                            }
                         }else{
-                            this.$message.error('下架失败');
+                            if(type == 1){
+                              this.$message.error('下架失败');
+                            }else{
+                              this.$message.error('上架失败');
+                            }
                         }
                     })
                     this.getData();
@@ -190,13 +210,23 @@ export default {
         },
         delAllSelection() {
             const length = this.multipleSelection.length;
-            let str = '';
-            this.delList = this.delList.concat(this.multipleSelection);
-            for (let i = 0; i < length; i++) {
-                str += this.multipleSelection[i].name + ' ';
+            console.log(this.multipleSelection)
+            let delParam = {};
+            let ids = [];
+            for (let item of this.multipleSelection){
+              ids.push(item.id);
             }
-            this.$message.error(`删除了${str}`);
-            this.multipleSelection = [];
+            delParam.ids = ids;
+            delParam.type = 1;
+            
+            unUpBook(delParam).then(res => {
+              if(res.code == 0){
+                this.$message.success("下架成功");
+              }else{
+                this.$message.error("下价失败")
+              }
+            })
+            this.getData();
         },
         // 编辑操作
         handleEdit(index, row) {
@@ -206,9 +236,15 @@ export default {
         },
         // 保存编辑
         saveEdit() {
+            updateBook(this.form).then(res => {
+              if(res.code == 0){
+                this.$message.success("编辑成功");
+                this.$set(this.tableData, this.idx, this.form);
+              }else{
+                this.$message.error("编辑失败");
+              }
+            })
             this.editVisible = false;
-            this.$message.success(`修改第 ${this.idx + 1} 行成功`);
-            this.$set(this.tableData, this.idx, this.form);
         },
         // 分页导航
         handlePageChange(val) {

@@ -9,6 +9,7 @@ export const fetchData = query => {
   });
 };
 
+// 下架或上架书籍
 export const unUpBook = query => {
   return request({
     url: '/book/unUpBook',
@@ -17,6 +18,34 @@ export const unUpBook = query => {
   });
 };
 
+// 更新书籍
+export const updateBook = query => {
+  return request({
+    url: '/book/updateBook',
+    method: 'post',
+    data: query
+  });
+};
+
+// 删除弹幕
+export const deleteBarrages = query => {
+  return request({
+    url: '/barrage/deleteBarrages',
+    method: 'post',
+    data: query
+  });
+};
+
+// 更新弹幕
+export const updateBarrage = query => {
+  return request({
+    url: '/barrage/updateBarrage',
+    method: 'post',
+    data: query
+  });
+};
+
+// 获取弹幕列表
 export const fetchBarrage = queryBarrage => {
   return request({
     url: '/barrage/barrages',

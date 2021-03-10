@@ -11,10 +11,10 @@
                 <el-select v-model="query.level" placeholder="弹幕级别" class="handle-select mr10">
                     <el-option key="1" label="正能量" value="1"></el-option>
                     <el-option key="2" label="正常" value="2"></el-option>
-                    <el-option key="3" label="正常1" value="3"></el-option>
-                    <el-option key="4" label="正常2" value="4"></el-option>
-                    <el-option key="5" label="正常3" value="5"></el-option>
-                    <el-option key="6" label="正常4" value="6"></el-option>
+                    <el-option key="3" label="游戏，娱乐" value="3"></el-option>
+                    <el-option key="4" label="政治" value="4"></el-option>
+                    <el-option key="5" label="脏，不文明" value="5"></el-option>
+                    <el-option key="6" label="金融，赌博" value="6"></el-option>
                 </el-select>
                 <el-input v-model="query.name" placeholder="内容" class="handle-input mr10"></el-input>
                 <el-button type="primary" icon="el-icon-search" @click="handleSearch">搜索</el-button>
@@ -48,6 +48,7 @@
                         <p :title="`${scope.row.content}`">{{getIntro(scope.row.content)}}</p>
                     </template>
                 </el-table-column>
+                <el-table-column prop="level" label="级别" align="center"></el-table-column>
                 <!-- <el-table-column label="状态" align="center">
                     <template slot-scope="scope">
                         <el-tag :type="scope.row.deleted === 0 ? 'success' : scope.row.state === 1 ? 'danger' : ''">{{
@@ -83,11 +84,11 @@
         <!-- 编辑弹出框 -->
         <el-dialog title="编辑" :visible.sync="editVisible" width="30%">
             <el-form ref="form" :model="form" label-width="70px">
-                <el-form-item label="用户名">
-                    <el-input v-model="form.name"></el-input>
+                <el-form-item label="内容">
+                    <el-input v-model="form.content"></el-input>
                 </el-form-item>
-                <el-form-item label="地址">
-                    <el-input v-model="form.address"></el-input>
+                <el-form-item label="级别">
+                    <el-input v-model="form.level"></el-input>
                 </el-form-item>
             </el-form>
             <span slot="footer" class="dialog-footer">
@@ -100,6 +101,8 @@
 
 <script>
 import { fetchBarrage } from '../../api/index';
+import { deleteBarrages } from '../../api/index';
+import { updateBarrage } from '../../api/index';
 import { formatDate } from '../../utils/time';
 export default {
     name: 'basetable',
@@ -153,13 +156,25 @@ export default {
         },
         // 删除操作
         handleDelete(index, row) {
+          let query = {};
+          let ids = [];
+          ids.push(row.id);
+          query.ids = ids;
+          query.type = 1;
             // 二次确认删除
             this.$confirm('确定要删除吗？', '提示', {
                 type: 'warning'
             })
                 .then(() => {
-                    this.$message.success('删除成功');
-                    this.tableData.splice(index, 1);
+                    deleteBarrages(query).then(res =>{
+                        console.log(res)
+                        if(res.code == 0){
+                            this.$message.success('删除成功');
+                        }else{
+                            this.$message.error('删除失败');
+                        }
+                    })
+                    this.getData();
                 })
                 .catch(() => {});
         },
@@ -169,13 +184,23 @@ export default {
         },
         delAllSelection() {
             const length = this.multipleSelection.length;
-            let str = '';
-            this.delList = this.delList.concat(this.multipleSelection);
-            for (let i = 0; i < length; i++) {
-                str += this.multipleSelection[i].name + ' ';
+            console.log(this.multipleSelection)
+            let delParam = {};
+            let ids = [];
+            for (let item of this.multipleSelection){
+              ids.push(item.id);
             }
-            this.$message.error(`删除了${str}`);
-            this.multipleSelection = [];
+            delParam.ids = ids;
+            delParam.type = 1;
+            
+            deleteBarrages(delParam).then(res => {
+              if(res.code == 0){
+                this.$message.success("删除成功");
+              }else{
+                this.$message.error("删除失败");
+              }
+            })
+            this.getData();
         },
         // 编辑操作
         handleEdit(index, row) {
@@ -185,9 +210,15 @@ export default {
         },
         // 保存编辑
         saveEdit() {
+            updateBarrage(this.form).then(res => {
+              if(res.code == 0){
+                this.$message.success("编辑成功");
+                this.$set(this.tableData, this.idx, this.form);
+              }else{
+                this.$message.error("编辑失败");
+              }
+            })
             this.editVisible = false;
-            this.$message.success(`修改第 ${this.idx + 1} 行成功`);
-            this.$set(this.tableData, this.idx, this.form);
         },
         // 分页导航
         handlePageChange(val) {
