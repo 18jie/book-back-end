@@ -62,24 +62,24 @@ export default {
                     title: '系统首页'
                 },
                 {
-                    icon: 'el-icon-lx-cascades',
+                    icon: 'el-icon-lx-copy',
+                    index: 'tabs',
+                    title: '消息管理'
+                },
+                {
+                    icon: 'el-icon-notebook-2',
                     index: 'table',
                     title: '书籍管理'
                 },
                 {
-                    icon: 'el-icon-lx-cascades',
+                    icon: 'el-icon-document',
                     index: 'table1',
                     title: '弹幕管理'
                 },
                 {
-                    icon: 'el-icon-lx-cascades',
+                    icon: 'el-icon-user',
                     index: 'table2',
                     title: '用户管理'
-                },
-                {
-                    icon: 'el-icon-lx-copy',
-                    index: 'tabs',
-                    title: 'tab选项卡'
                 },
                 {
                     icon: 'el-icon-lx-calendar',

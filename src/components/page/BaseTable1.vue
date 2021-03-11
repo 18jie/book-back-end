@@ -2,7 +2,7 @@
     <div>
         <div class="crumbs">
             <el-breadcrumb separator="/">
-                <el-breadcrumb-item> <i class="el-icon-lx-cascades"></i> 书籍管理 </el-breadcrumb-item>
+                <el-breadcrumb-item> <i class="el-icon-document"></i> 弹幕管理 </el-breadcrumb-item>
             </el-breadcrumb>
         </div>
         <div class="container">
@@ -173,8 +173,8 @@ export default {
                         }else{
                             this.$message.error('删除失败');
                         }
+                        this.getData();
                     })
-                    this.getData();
                 })
                 .catch(() => {});
         },

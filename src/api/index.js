@@ -79,3 +79,57 @@ export const logout = logout => {
     data: logout
   })
 }
+
+// 获取用户列表
+export const fetchUser = query => {
+  return request({
+    url: '/user/list',
+    method: 'get',
+    params: query
+  })
+};
+
+// 更新用户
+export const updateUser = query => {
+  return request({
+    url: '/user/updateUser',
+    method: 'post',
+    data: query
+  })
+};
+
+// 获取数据列表
+export const deleteUser = query => {
+  return request({
+    url: '/user/deleteUser',
+    method: 'post',
+    data: query
+  })
+};
+
+// 获取当前登录用户书架列表(后台用)
+export const userFavorites = query => {
+  return request({
+    url: '/favorite/userFavorites',
+    method: 'get',
+    params: query
+  })
+};
+
+// 删除当前登录用户书架列表(后台用)
+export const deleteFavorites = query => {
+  return request({
+    url: '/favorite/deleteFavorites',
+    method: 'post',
+    data: query
+  })
+};
+
+// 获取当前登录用户书架列表(前台用)
+export const listFavoriteBookVo = query => {
+  return request({
+    url: '/favorite/listFavoriteBookVo',
+    method: 'get',
+    data: query
+  })
+};

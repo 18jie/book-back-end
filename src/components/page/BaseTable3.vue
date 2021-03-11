@@ -3,7 +3,7 @@
         <div class="crumbs">
             <el-breadcrumb separator="/">
                 <el-breadcrumb-item>
-                    <i class="el-icon-notebook-2"></i> 书籍管理
+                    <i class="el-icon-notebook-2"></i> 书架管理
                 </el-breadcrumb-item>
             </el-breadcrumb>
         </div>
@@ -50,7 +50,7 @@
                     </template>
                 </el-table-column>
                 <!-- <el-table-column prop="address" label="地址"></el-table-column> -->
-                <el-table-column label="上架状态" align="center">
+                <!-- <el-table-column label="上架状态" align="center">
                     <template slot-scope="scope">
                         <el-tag
                             :type="scope.row.upStatus===0?'success':(scope.row.state===1?'danger':'')"
@@ -63,29 +63,29 @@
                             :type="scope.row.deleted===0?'success':(scope.row.state===1?'danger':'')"
                         >{{scope.row.deleted === 0 ? '连载' : '结束'}}</el-tag>
                     </template>
-                </el-table-column>
+                </el-table-column> -->
 
                 <el-table-column label="更新时间">
                     <template slot-scope="scope">{{formatTime(scope.row.bookUpdateTime)}}</template>
                 </el-table-column>
                 <el-table-column label="操作" width="180" align="center">
                     <template slot-scope="scope">
-                        <el-button
+                        <!-- <el-button
                             type="text"
                             icon="el-icon-edit"
                             @click="handleEdit(scope.$index, scope.row)"
-                        >编辑</el-button>
-                        <el-button
+                        >编辑</el-button> -->
+                        <!-- <el-button
                             type="text"
                             icon="el-icon-refresh"
                             @click="handleDelete(scope.$index, scope.row, 0)"
-                        >上架</el-button>
+                        >上架</el-button> -->
                         <el-button
                             type="text"
                             icon="el-icon-delete"
                             class="red"
                             @click="handleDelete(scope.$index, scope.row, 1)"
-                        >下架</el-button>
+                        >删除</el-button>
                     </template>
                 </el-table-column>
             </el-table>
@@ -120,10 +120,8 @@
 </template>
 
 <script>
-import { fetchData } from '../../api/index';
 import { formatDate } from '../../utils/time';
-import { unUpBook } from '../../api/index';
-import { updateBook } from '../../api/index';
+import { deleteFavorites,userFavorites } from '../../api/index';
 export default {
     name: 'basetable',
     data() {
@@ -150,7 +148,7 @@ export default {
     methods: {
         // 获取 easy-mock 的模拟数据
         getData() {
-            fetchData(this.query).then(res => {
+            userFavorites(this.query).then(res => {
                 let tmp = res.data;
                 this.tableData = tmp.records;
                 this.pageTotal = tmp.total;
