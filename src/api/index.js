@@ -80,6 +80,14 @@ export const logout = logout => {
   })
 }
 
+export const isLogin = query => {
+  return request({
+    url: '/login/isLogin',
+    method: 'get',
+    param: query
+  })
+}
+
 // 获取用户列表
 export const fetchUser = query => {
   return request({

@@ -47,7 +47,7 @@ export default {
             this.$refs.login.validate(valid => {
                     if (valid) {
                         login(this.param).then(res=>{
-                        console.log(res);
+                        // console.log(res);
                         if(res.code == 0){
                             this.$message.success('登录成功');
                             var user = res.data;
@@ -55,6 +55,7 @@ export default {
                             // localStorage.setItem('ms_loginTime',user.loginTime);
                             // localStorage.setItem('ms_loginCount',user.loginCount);
                             localStorage.setItem('ms_user',user);
+                            localStorage.setItem('ms_auth',user.auth);
                             this.$router.push('/');
                         }else{
                             this.$message.error('账号活密码错误');

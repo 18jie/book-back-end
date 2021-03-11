@@ -12,16 +12,22 @@
             <div class="form-box">
                 <el-form ref="form" :model="form" label-width="80px">
                     <el-form-item label="表单名称">
-                        <el-input v-model="form.name"></el-input>
+                        <el-input v-model="form.username"></el-input>
                     </el-form-item>
-                    <el-form-item label="选择器">
+                    <el-form-item label="表单名称">
+                        <el-input v-model="form.phone" ></el-input>
+                    </el-form-item>
+                    <el-form-item label="表单名称">
+                        <el-input v-model="form.password" show-password></el-input>
+                    </el-form-item>
+                    <!-- <el-form-item label="选择器">
                         <el-select v-model="form.region" placeholder="请选择">
                             <el-option key="bbk" label="步步高" value="bbk"></el-option>
                             <el-option key="xtc" label="小天才" value="xtc"></el-option>
                             <el-option key="imoo" label="imoo" value="imoo"></el-option>
                         </el-select>
-                    </el-form-item>
-                    <el-form-item label="日期时间">
+                    </el-form-item> -->
+                    <!-- <el-form-item label="日期时间">
                         <el-col :span="11">
                             <el-date-picker
                                 type="date"
@@ -39,30 +45,30 @@
                                 style="width: 100%;"
                             ></el-time-picker>
                         </el-col>
-                    </el-form-item>
-                    <el-form-item label="城市级联">
+                    </el-form-item> -->
+                    <!-- <el-form-item label="城市级联">
                         <el-cascader :options="options" v-model="form.options"></el-cascader>
-                    </el-form-item>
-                    <el-form-item label="选择开关">
+                    </el-form-item> -->
+                    <!-- <el-form-item label="选择开关">
                         <el-switch v-model="form.delivery"></el-switch>
-                    </el-form-item>
-                    <el-form-item label="多选框">
+                    </el-form-item> -->
+                    <!-- <el-form-item label="多选框">
                         <el-checkbox-group v-model="form.type">
                             <el-checkbox label="步步高" name="type"></el-checkbox>
                             <el-checkbox label="小天才" name="type"></el-checkbox>
                             <el-checkbox label="imoo" name="type"></el-checkbox>
                         </el-checkbox-group>
-                    </el-form-item>
-                    <el-form-item label="单选框">
+                    </el-form-item> -->
+                    <!-- <el-form-item label="单选框">
                         <el-radio-group v-model="form.resource">
                             <el-radio label="步步高"></el-radio>
                             <el-radio label="小天才"></el-radio>
                             <el-radio label="imoo"></el-radio>
                         </el-radio-group>
-                    </el-form-item>
-                    <el-form-item label="文本框">
+                    </el-form-item> -->
+                    <!-- <el-form-item label="文本框">
                         <el-input type="textarea" rows="5" v-model="form.desc"></el-input>
-                    </el-form-item>
+                    </el-form-item> -->
                     <el-form-item>
                         <el-button type="primary" @click="onSubmit">表单提交</el-button>
                         <el-button>取消</el-button>
@@ -74,6 +80,7 @@
 </template>
 
 <script>
+import {isLogin,updateUser} from '../../api/index';
 export default {
     name: 'baseform',
     data() {
@@ -130,22 +137,35 @@ export default {
                     ]
                 }
             ],
-            form: {
-                name: '',
-                region: '',
-                date1: '',
-                date2: '',
-                delivery: true,
-                type: ['步步高'],
-                resource: '小天才',
-                desc: '',
-                options: []
-            }
+            // form: {
+            //     name: '',
+            //     region: '',
+            //     date1: '',
+            //     date2: '',
+            //     delivery: true,
+            //     type: ['步步高'],
+            //     resource: '小天才',
+            //     desc: '',
+            //     options: []
+            // }
+            form:{}
         };
+    },
+    created() {
+        this.getData();
     },
     methods: {
         onSubmit() {
-            this.$message.success('提交成功！');
+            updateUser(this.form).then(res => {
+              if(res.code == 0){
+                this.$message.success('提交成功！');
+              }
+            })
+        },
+        getData(){
+          isLogin().then(res => {
+            this.form = res.data;
+          })
         }
     }
 };

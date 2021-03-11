@@ -14,7 +14,7 @@
                     icon="el-icon-delete"
                     class="handle-del mr10"
                     @click="delAllSelection"
-                >批量下架</el-button>
+                >批量删除</el-button>
                 <el-select v-model="query.type" placeholder="类型" class="handle-select mr10">
                     <el-option key="1" label="玄幻奇幻" value="1"></el-option>
                     <el-option key="2" label="武侠仙侠" value="2"></el-option>
@@ -121,7 +121,7 @@
 
 <script>
 import { formatDate } from '../../utils/time';
-import { deleteFavorites,userFavorites } from '../../api/index';
+import { deleteFavorites,userFavorites,updateBook } from '../../api/index';
 export default {
     name: 'basetable',
     data() {
@@ -171,31 +171,16 @@ export default {
             ids.push(row.id);
             query.ids = ids;
             query.type = type;
-            // 二次确认删除
-            let warn = "";
-            if(type == 0){
-              warn = "确定要上架吗？"
-            }else{
-              warn = "确定要下架吗？"
-            }
-            this.$confirm(warn, '提示', {
+            this.$confirm("确认要删除吗", '提示', {
                 type: 'warning'
             })
                 .then(() => {
-                    unUpBook(query).then(res =>{
+                    deleteFavorites(query).then(res =>{
                         console.log(res)
                         if(res.code == 0){
-                            if(type == 1){
-                              this.$message.success('下架成功');
-                            }else{
-                              this.$message.success('上架成功');
-                            }
+                              this.$message.success('删除成功');
                         }else{
-                            if(type == 1){
-                              this.$message.error('下架失败');
-                            }else{
-                              this.$message.error('上架失败');
-                            }
+                              this.$message.error('删除失败');
                         }
                         this.getData();
                     })
@@ -216,12 +201,11 @@ export default {
             }
             delParam.ids = ids;
             delParam.type = 1;
-            
-            unUpBook(delParam).then(res => {
+            deleteFavorites(delParam).then(res => {
               if(res.code == 0){
-                this.$message.success("下架成功");
+                this.$message.success("删除成功");
               }else{
-                this.$message.error("下价失败")
+                this.$message.error("删除失败")
               }
             })
             this.getData();

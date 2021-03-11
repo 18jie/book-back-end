@@ -69,9 +69,15 @@
                 <el-form-item label="用户名">
                     <el-input v-model="form.username"></el-input>
                 </el-form-item>
-                <el-form-item label="身份">
+                <el-form-item label="选择器">
+                        <el-select v-model="form.auth" placeholder="请选择">
+                            <el-option :key="0" label="普通用户" :value="0"></el-option>
+                            <el-option :key="1" label="管理员" :value="1"></el-option>
+                        </el-select>
+                    </el-form-item>
+                <!-- <el-form-item label="身份">
                     <el-input v-model="form.auth"></el-input>
-                </el-form-item>
+                </el-form-item> -->
                 <el-form-item label="年龄">
                     <el-input v-model="form.age"></el-input>
                 </el-form-item>

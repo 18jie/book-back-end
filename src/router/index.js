@@ -25,6 +25,11 @@ export default new Router({
                     meta: { title: '自定义图标' }
                 },
                 {
+                  path: '/table3',
+                  component: () => import(/* webpackChunkName: "table" */ '../components/page/BaseTable3.vue'),
+                  meta: { title: '书架管理' }
+              },
+                {
                     path: '/table',
                     component: () => import(/* webpackChunkName: "table" */ '../components/page/BaseTable.vue'),
                     meta: { title: '书籍管理' }
