@@ -84,7 +84,7 @@ export const isLogin = query => {
   return request({
     url: '/login/isLogin',
     method: 'get',
-    param: query
+    params: query
   })
 }
 
