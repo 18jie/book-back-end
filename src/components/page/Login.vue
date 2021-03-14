@@ -56,6 +56,7 @@ export default {
                             // localStorage.setItem('ms_loginCount',user.loginCount);
                             localStorage.setItem('ms_user',user);
                             localStorage.setItem('ms_auth',user.auth);
+                            localStorage.setItem('ms_loginTime',user.loginTime)
                             this.$router.push('/');
                         }else{
                             this.$message.error('账号活密码错误');

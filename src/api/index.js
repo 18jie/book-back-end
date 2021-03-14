@@ -27,6 +27,14 @@ export const updateBook = query => {
   });
 };
 
+export const bookTop = query => {
+  return request({
+    url: '/book/bookTop',
+    method: 'get',
+    params: query
+  });
+};
+
 // 删除弹幕
 export const deleteBarrages = query => {
   return request({

@@ -16,25 +16,25 @@
           </div>
           <div class="user-info-list">
             上次登录时间：
-            <span>2019-11-01</span>
+            <span>2021-3-14</span>
           </div>
           <div class="user-info-list">
             上次登录地点：
-            <span>东莞</span>
+            <span>北京</span>
           </div>
         </el-card>
         <el-card shadow="hover"
                  style="height:252px;">
           <div slot="header"
                class="clearfix">
-            <span>语言详情</span>
-          </div>Vue
-          <el-progress :percentage="71.3"
-                       color="#42b983"></el-progress>JavaScript
-          <el-progress :percentage="24.1"
-                       color="#f1e05a"></el-progress>CSS
-          <el-progress :percentage="13.7"></el-progress>HTML
-          <el-progress :percentage="5.9"
+            <span>书籍排行</span>
+          </div>{{bookTop[0].bookType}}
+          <el-progress :percentage="bookTop[0].counts"
+                       color="#42b983"></el-progress>{{bookTop[1].bookType}}
+          <el-progress :percentage="bookTop[1].counts"
+                       color="#f1e05a"></el-progress>{{bookTop[2].bookType}}
+          <el-progress :percentage="bookTop[2].counts"></el-progress>{{bookTop[3].bookType}}
+          <el-progress :percentage="bookTop[3].counts"
                        color="#f56c6c"></el-progress>
         </el-card>
       </el-col>
@@ -47,7 +47,7 @@
               <div class="grid-content grid-con-1">
                 <i class="el-icon-lx-people grid-con-icon"></i>
                 <div class="grid-cont-right">
-                  <div class="grid-num">1234</div>
+                  <div class="grid-num">99</div>
                   <div>用户访问量</div>
                 </div>
               </div>
@@ -59,7 +59,7 @@
               <div class="grid-content grid-con-2">
                 <i class="el-icon-lx-notice grid-con-icon"></i>
                 <div class="grid-cont-right">
-                  <div class="grid-num">321</div>
+                  <div class="grid-num">3</div>
                   <div>系统消息</div>
                 </div>
               </div>
@@ -71,7 +71,7 @@
               <div class="grid-content grid-con-3">
                 <i class="el-icon-notebook-1 grid-con-icon"></i>
                 <div class="grid-cont-right">
-                  <div class="grid-num">5000</div>
+                  <div class="grid-num">136</div>
                   <div>数量</div>
                 </div>
               </div>
@@ -84,7 +84,8 @@
                class="clearfix">
             <span>待办事项</span>
             <el-button style="float: right; padding: 3px 0"
-                       type="text" @click="open">添加</el-button>
+                       type="text"
+                       @click="open">添加</el-button>
           </div>
           <el-table :show-header="false"
                     :data="todoList"
@@ -134,6 +135,8 @@
 <script>
 import Schart from 'vue-schart';
 import bus from '../common/bus';
+import { bookTop } from '../../api/index';
+import { formatDate } from '../../utils/time';
 export default {
     name: 'dashboard',
     data() {
@@ -144,6 +147,7 @@ export default {
                 pageSize: 10
             },
             name: localStorage.getItem('ms_username'),
+            loginTime: localStorage.getItem('ms_loginTime'),
             todoList: [
                 {
                     title: '今天要修复100个bug',
@@ -242,7 +246,8 @@ export default {
                         data: [74, 118, 200, 235, 90]
                     }
                 ]
-            }
+            },
+            bookTop: []
         };
     },
     components: {
@@ -254,6 +259,7 @@ export default {
         }
     },
     created() {
+        this.getBookTop();
         // this.handleListener();
         // this.changeDate();
         // this.getBook();
@@ -276,13 +282,13 @@ export default {
         open() {
             this.$prompt('请输入代办事项', '提示', {
                 confirmButtonText: '确定',
-                cancelButtonText: '取消',
+                cancelButtonText: '取消'
                 // inputPattern: /[\w!#$%&'*+/=?^_`{|}~-]+(?:\.[\w!#$%&'*+/=?^_`{|}~-]+)*@(?:[\w](?:[\w-]*[\w])?\.)+[\w](?:[\w-]*[\w])?/,
                 // inputErrorMessage: '邮箱格式不正确'
             })
                 .then(({ value }) => {
                     this.$message({
-                      // TODO 后端接收消息
+                        // TODO 后端接收消息
                         type: 'success',
                         message: '你的邮箱是: ' + value
                     });
@@ -293,7 +299,17 @@ export default {
                         message: '取消输入'
                     });
                 });
-        }
+        },
+        getBookTop() {
+            bookTop().then((res) => {
+                console.log(res);
+                this.bookTop = res.data;
+            });
+        },
+        formatTime(value){
+            var date = new Date(value);
+            return formatDate(date,"yyyy-MM-dd hh:mm");
+        },
         // getBook() {
         //     console.log(this.book);
         //     fetchBook(this.book).then((res) => {
